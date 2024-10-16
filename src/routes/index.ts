@@ -1,0 +1,11 @@
+import { Router } from "express";
+import asistencia from "./asistencia.routes";
+import profesor from "./profesor.routes";
+import estudiante from "./estudiante.routes";
+import clases from "./clases.routes";
+const router = Router();
+router.use(asistencia);
+router.use(profesor);
+router.use(estudiante);
+router.use(clases);
+export default router;

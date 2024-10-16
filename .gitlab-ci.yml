@@ -1,0 +1,44 @@
+image: node:20
+
+stages:
+  - install
+  - build
+  - docker_build
+  - deploy
+
+install_dependencies:
+  stage: install
+  script:
+    - echo "Installing dependencies in the project..."
+    - npm install
+    - echo "Verifying TypeScript installation..."
+    - npx tsc --version # Verifica que TypeScript esté instalado
+    - ls -l node_modules/.bin # Lista los archivos en node_modules/.bin para verificar la presencia de tsc
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+
+build_project:
+  stage: build
+  script:
+    - echo "Building the project..."
+    - npx tsc # Usa npx para ejecutar el TypeScript Compiler
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+
+docker_build:
+  image: docker:latest # Usamos la imagen oficial de Docker
+  stage: docker_build
+  services:
+    - docker:dind # Docker in Docker para permitir la construcción de imágenes
+  script:
+    - echo "Building Docker image..."
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY # Login al registro de GitLab
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG . # Construcción de la imagen
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG # Pushear la imagen al registro
+
+variables:
+  DOCKER_DRIVER: overlay2

@@ -1,0 +1,25 @@
+# Excluye los directorios y archivos que no son necesarios para construir la imagen
+
+# Node modules y logs
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Archivos de configuración y cachés
+*.log
+*.md
+*.git
+.git/
+Dockerfile
+.dockerignore
+README.md
+
+# Archivos y directorios específicos de desarrollo
+coverage/
+.vscode/
+.idea/
+*.test.ts
+*.test.js
+
+# Otros archivos que no son necesarios para la construcción de la imagen
+.env
